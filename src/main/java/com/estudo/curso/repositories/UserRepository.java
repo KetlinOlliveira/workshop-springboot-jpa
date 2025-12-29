@@ -14,5 +14,5 @@ import com.estudo.curso.entities.User;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    
+    //interface para operações de banco de dados da entidade User
 }

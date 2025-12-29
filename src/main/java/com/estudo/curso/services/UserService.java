@@ -14,17 +14,17 @@ import org.springframework.stereotype.Service;
  *
  * @author ketli
  */
-@Service
+@Service//indica que a classe é um componente de serviço do Spring
 public class UserService {
-    @Autowired
+    @Autowired//injeção de dependência do UserRepository
     private UserRepository userRepository;
     
     public List<User> findAll(){
         return userRepository.findAll();
-    }
-    public User findById(Long id ){
-        Optional<User> obj = userRepository.findById(id);
-        return obj.get();
+    }//método para buscar todos os usuários
+    public User findById(Long id ){//método para buscar um usuário por id
+        Optional<User> obj = userRepository.findById(id);//método para buscar um usuário por id
+        return obj.get();//retorna o usuário encontrado
     }
     
     

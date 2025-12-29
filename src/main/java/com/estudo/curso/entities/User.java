@@ -4,6 +4,7 @@
  */
 package com.estudo.curso.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,8 +32,9 @@ public class User implements Serializable{
     private String telefone;
     private String password;
     
-    @OneToMany(mappedBy = "client")
-    private List<Order> orders = new ArrayList<>();
+    @JsonIgnore//ignora a serialização para evitar referência cíclica
+    @OneToMany(mappedBy = "client")//mapeamento um para muitos com a entidade Order
+    private List<Order> orders = new ArrayList<>();//lista de pedidos do usuário
 
    
     public User() {
