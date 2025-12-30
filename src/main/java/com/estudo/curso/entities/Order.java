@@ -104,9 +104,5 @@ public class Order implements Serializable {
         return Objects.equals(this.id, other.id);
     }
     
-    
-    
-    
-    
-    
+
 }

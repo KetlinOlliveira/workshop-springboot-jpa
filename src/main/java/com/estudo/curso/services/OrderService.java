@@ -22,6 +22,7 @@ public class OrderService {
     public List<Order> findAll(){
         return orderRepository.findAll();
     }//método para buscar todos os pedidos
+
     public Order findById (Long id){
          Optional<Order> od = orderRepository.findById(id);//método para buscar um pedido por id
          return od.get();//retorna o pedido encontrado
