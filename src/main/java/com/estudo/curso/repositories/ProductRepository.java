@@ -1,4 +1,7 @@
 package com.estudo.curso.repositories;
 
-public interface ProductRepository {
+import com.estudo.curso.entities.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProductRepository extends JpaRepository<Product, Long> {
 }

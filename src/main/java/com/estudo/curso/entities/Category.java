@@ -1,9 +1,11 @@
 package com.estudo.curso.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.*;
+
 import jakarta.persistence.GenerationType;
 
 
@@ -16,6 +18,10 @@ public class Category implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private  String nome;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "categories")
+   private Set<Product> products = new HashSet<>();
 
     public Category(){
 
@@ -35,6 +41,9 @@ public class Category implements Serializable {
     }
     public void setNome(String nome) {
         this.nome = nome;
+    }
+    public Set<Product> getProducts() {
+        return products;
     }
 
     @Override
