@@ -5,14 +5,12 @@
 package com.estudo.curso.config;
 
 import com.estudo.curso.entities.*;
-import com.estudo.curso.repositories.CategoryRepository;
-import com.estudo.curso.repositories.ProductRepository;
+import com.estudo.curso.repositories.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import com.estudo.curso.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import com.estudo.curso.repositories.OrderRepository;
+
 import java.util.Arrays;
 import java.time.Instant;
 //classe para popular o banco de dados com dados iniciais para teste
@@ -25,12 +23,19 @@ import java.time.Instant;
 public class TestConfig implements CommandLineRunner {
     @Autowired//faz a injeção de dependencia do spring para o repositorio
     private UserRepository userRepository;//repositorio de usuário
+
     @Autowired
     private OrderRepository orderRepository;//repositorio de pedido
+
     @Autowired
     private CategoryRepository categoryRepository;//repositorio de categoria
+
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+
     
     @Override
     public void run(String... args) throws Exception {
@@ -50,6 +55,7 @@ public class TestConfig implements CommandLineRunner {
         Product p4 = new Product(null, "PC Gamer", "Donec aliquet odio ac rhoncus cursus.", 1200.0, "");
         Product p5 = new Product(null, "Rails for Dummies", "Cras fringilla convallis sem vel faucibus.", 100.99, "");
 
+
         categoryRepository.saveAll(Arrays.asList(cat1, cat2, cat3));
         userRepository.saveAll(Arrays.asList(user1, user2));
         orderRepository.saveAll(Arrays.asList(o1, o2, o3));
@@ -62,5 +68,20 @@ public class TestConfig implements CommandLineRunner {
         p1.getCategory().add(cat1);
 
         productRepository.saveAll(Arrays.asList(p1,p2,p3,p4,p5));
+
+        OrderItem oi1 = new OrderItem(o1, p1,  p1.getPrice(), 2);
+        OrderItem oi2 = new OrderItem(o1, p3,  p1.getPrice(),1);
+        OrderItem oi3 = new OrderItem(o2, p3,  p3.getPrice(),2);
+        OrderItem oi4 = new OrderItem(o3, p5,  p5.getPrice(),2);
+
+        orderItemRepository.saveAll(Arrays.asList(oi1, oi2, oi3, oi4));
+
+        Payment pay1 = new Payment(null, Instant.parse("2019-06-22T19:53:07Z"), o1 );
+        o1.setPayment(pay1);
+        Payment pay2 = new Payment(null,Instant.parse("2019-06-22T11:58:07Z"), o2 );
+        o2.setPayment(pay2);
+        orderRepository.saveAll(Arrays.asList(o1, o2));
+
+
     }
 }

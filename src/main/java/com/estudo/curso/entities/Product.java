@@ -1,6 +1,7 @@
 package com.estudo.curso.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -26,6 +27,11 @@ public class Product implements Serializable {
     @JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"),
     inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "id.product")
+    @JsonIgnoreProperties("product")
+    private Set<OrderItem> items = new HashSet<>();
 
     public Product(){
 
@@ -82,6 +88,14 @@ public class Product implements Serializable {
         return categories;
     }
 
+    @JsonIgnoreProperties("items")// impede que cada Order dentro da lista tente carregar seus próprios items
+    public Set<Order> getOrders(){
+        Set<Order> set = new HashSet<>();
+        for(OrderItem x : items){//percorre todos os items da lista Items do tipo OrderItem
+            set.add(x.getOrder());
+        }
+        return set;
+    }
     @Override
     public int hashCode() {
         int hash = 7;
