@@ -26,6 +26,10 @@ public class UserService {
         Optional<User> obj = userRepository.findById(id);//método para buscar um usuário por id
         return obj.get();//retorna o usuário encontrado
     }
+
+    public User insert(User obj){
+        return userRepository.save(obj);
+    }
     
     
 }
