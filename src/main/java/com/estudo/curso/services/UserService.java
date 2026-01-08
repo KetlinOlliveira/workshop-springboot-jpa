@@ -5,9 +5,15 @@
 package com.estudo.curso.services;
 import com.estudo.curso.repositories.UserRepository;
 import java.util.List;
+
+import com.estudo.curso.services.exceptions.DataBaseException;
+import com.estudo.curso.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.estudo.curso.entities.User;
 import java.util.Optional;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,17 +28,38 @@ public class UserService {
     public List<User> findAll(){
         return userRepository.findAll();
     }//método para buscar todos os usuários
+
     public User findById(Long id ){//método para buscar um usuário por id
         Optional<User> obj = userRepository.findById(id);//método para buscar um usuário por id
-        return obj.get();//retorna o usuário encontrado
+        return obj.orElseThrow(() -> new ResourceNotFoundException(id)); //retorna o usuário encontrado
     }
 
     public User insert(User obj){
         return userRepository.save(obj);
     }
+
     public void delete(Long id){
-         userRepository.deleteById(id);
+        try {
+            userRepository.deleteById(id);
+        }catch(EmptyResultDataAccessException e){
+            throw new  ResourceNotFoundException(id);
+        }catch(DataIntegrityViolationException e){
+            throw new DataBaseException(e.getMessage());
+        }
     }
-    
-    
+
+    public User update(Long id, User obj){
+        User entity = userRepository.getReferenceById(id);
+        updateData(entity, obj);
+        return userRepository.save(entity);
+
+    }
+
+    private void updateData(User entity, User obj) {
+        entity.setName(obj.getName());
+        entity.setEmail(obj.getEmail());
+        entity.setTelefone(obj.getTelefone());
+    }
+
+
 }
