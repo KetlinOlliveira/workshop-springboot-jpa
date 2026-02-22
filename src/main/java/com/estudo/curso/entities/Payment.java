@@ -2,7 +2,7 @@ package com.estudo.curso.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.springframework.boot.jackson.autoconfigure.JacksonProperties;
+
 
 import java.io.Serializable;
 import java.time.Instant;
