@@ -24,6 +24,8 @@
 ## 📖 Sobre o Projeto
 Originalmente concebido como um Web Service para estudo pessoal, o projeto implementa um domínio de e-commerce e gestão de serviços. A arquitetura foi expandida para suportar uma camada de visualização (Frontend) que consome a API de forma assíncrona.
 
+
+
 ### 🎯 Objetivos Técnicos
 * Implementação de um modelo de domínio complexo.
 * Consumo de API Assíncrona: Implementação de Fetch API com async/await.
@@ -33,6 +35,11 @@ Originalmente concebido como um Web Service para estudo pessoal, o projeto imple
 * Relacionamentos Muitos-para-Muitos (Many-to-Many) com tabelas de associação.
 
 ---
+
+##  📸 Demonstração Visual
+
+### Tela Principal do DashBoard
+<img width="1832" height="869" alt="Captura de tela 2026-03-10 035854" src="https://github.com/user-attachments/assets/b2e75d64-286e-4d24-919c-8d10536d25f8" />
 
 ## 🏗️ Estrutura e Camadas
 
