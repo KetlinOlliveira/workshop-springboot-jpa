@@ -30,7 +30,6 @@ Originalmente concebido como um Web Service para estudo pessoal, o projeto imple
 * Implementação de um modelo de domínio complexo.
 * Consumo de API Assíncrona: Implementação de Fetch API com async/await.
 * Estruturação de camadas lógicas: **Resource**, **Service** e **Repository**.
-* Povoamento automático de banco de dados (Database Seeding).
 * Tratamento de exceções personalizado para APIs REST.
 * Relacionamentos Muitos-para-Muitos (Many-to-Many) com tabelas de associação.
 
