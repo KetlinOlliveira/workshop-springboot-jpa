@@ -13,7 +13,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenApi(){
         return new OpenAPI().info(new Info()
                 .title("API REST - Sistema de pedidos")
-                .description("Api desenvolvida durante o workshop de Spring Boot e JPA. Gerencia usuários, produtos, pedidos e categorias.")
+                .description("Api desenvolvida para o workshop de Spring Boot e JPA. Gerencia usuários, produtos, pedidos e categorias.")
                 .version("v1.0.0")
                 .contact(new Contact()
                         .name("Ketlin Olliveira")

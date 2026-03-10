@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  * @author ketli
  */
 
+@CrossOrigin("*")//permite que a api seja acessada por qualquer origem
 @RestController
 @RequestMapping(value = "/users")
 public class UserResource {
@@ -59,7 +60,6 @@ public class UserResource {
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User obj){
         obj = userService.update(id, obj);
         return ResponseEntity.ok().body(obj);
-
 
     }
    

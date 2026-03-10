@@ -6,7 +6,9 @@ import com.estudo.curso.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -28,6 +30,27 @@ public class ProductResource {
         return ResponseEntity.ok().body(prod);
     }
 
+    @PostMapping
+    public ResponseEntity<Product> save(@RequestBody Product obj){
+        obj = productService.insert(obj);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+        return ResponseEntity.created(uri).body(obj);
+
+    }
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        productService.delete(id);
+        return ResponseEntity.noContent().build();
+
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product obj){
+        obj = productService.update(id, obj);
+        return ResponseEntity.ok().body(obj);
+
+    }
+   
 
 
 }
