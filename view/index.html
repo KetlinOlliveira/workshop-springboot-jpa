@@ -3,39 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="web icon" href="img/store.ico"  type="img/store.ico">
     <title>DashBoard Web Service</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="sidebar">
-        <h2> Web Service</h2>
-        <nav>
-            <button onclick="mostrarSecao('usuarios')">Usuários</button>
-            <button onclick="mostrarSecao('pedidos')">Pedidos</button>
-            <button onclick="mostrarSecao('produtos')">Produtos</button>
-            <button onclick="mostrarSecao('categorias')">Categorias</button>
-        </nav>
-    </div>
 
-    <main class="content">
-        <header>
-            <h1 id="titulo-secao">Dashboard de Gestão</h1>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="img/store-icon.png" alt="Logo" class="logo-img">
+                <h2>MoreSale | Dashboard</h2>
+            </div>
+            <nav class="nav-menu">
+                <button onclick="mostrarSecao('usuarios')">👥 Usuários</button>
+                <button onclick="mostrarSecao('pedidos')">📦 Pedidos</button>
+                <button onclick="mostrarSecao('produtos')">🏷️ Produtos</button>
+                <button onclick="mostrarSecao('categorias')">🛒 Categorias</button>
+            </nav>
+        </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=Ketlin+Oliveira&background=C08552&color=fff" alt="User Avatar" class="avatar">
+                <div>
+                    <h3>Ketlin Oliveira</h3>
+                    <p>Administrador</p>
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <span >🔍</span>
+                <input type="text" placeholder="Buscar no Sistema...">
+            </div>
+            
         </header>
 
-        <section id="tabela-container">
-            <table id="tabela-dados">
-                <thead>
-                    <tr id="cabecalho-tabela">
+        <h1 id="titulo-secao" class="page-title">DashBoard</h1>
+        <div class="dashboard-grid">
 
-                    </tr>
-                </thead>
-                <tbody id="corpo-tabela">
-                    <!-- Preenchido via JS -->
-                </tbody>
-            </table>
-        </section>
+            <section id="form-container" class="card">
+                <div class="card-header">
+                    <h3>Novo Registro</h3>
+                    <span class="view-more">Preencha os campos abaixo</span>
+                </div>
+                <form id="meuForm">
+                    <div id="inputs-dinamicos" class="grid-inputs">
+                        <!-- Logica do javascript -->
+                    </div>
+                    <button type="submit" form="meuForm" class="btn-primary">Salvar registro</button>
+                </form>
+            </section>
+
+            <section class="card card-yellow">
+                <h3>Status do Sistema</h3>
+                <p class="card-subtitle">Web Serviços</p>
+                <h2 class="big-number">Online</h2>
+                <p class="card-footer">Servidor: localhost:8080</p>
+            </section>
+
+            <section id="tabela-container" class="card table-card">
+                <div class="card-header">
+                    <h3>Registros Salvos</h3>
+                    <span class="view-more">Ver detalhes</span>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr id="cabecalho-tabela"></tr>
+                        </thead>
+                        <tbody id="corpo-tabela"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div> 
     </main>
-
+</div>
     <script src="script.js"></script>
     
 </body>

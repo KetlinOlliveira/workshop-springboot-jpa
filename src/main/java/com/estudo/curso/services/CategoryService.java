@@ -47,7 +47,7 @@ public class CategoryService {
             throw new DataBaseException(e.getMessage());
         }
     }
-    
+
     public Category update(Long id, Category obj){
         try {
             Category entity = categoryRepository.getReferenceById(id);
@@ -59,7 +59,7 @@ public class CategoryService {
     }
 
      private void updateData(Category entity, Category obj) {
-        entity.setNome(obj.getNome());
+        entity.setName(obj.getName());
     }
 
 
