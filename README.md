@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>🚀MoreSale | DashBoard & WebService</h1>
+  <h1>💰 MoreSale | DashBoard & WebService</h1>
 </div>
 
 
@@ -39,6 +39,19 @@ Originalmente concebido como um Web Service para estudo pessoal, o projeto imple
 
 ### Tela Principal do DashBoard
 <img width="1832" height="869" alt="Captura de tela 2026-03-10 035854" src="https://github.com/user-attachments/assets/b2e75d64-286e-4d24-919c-8d10536d25f8" />
+
+---
+### 🛍 Adicionando novo pedido
+
+<img width="1815" height="903" alt="Captura de tela 2026-03-10 194949" src="https://github.com/user-attachments/assets/e5ea4739-b899-42e3-a6a3-2948144713e4" />
+
+---
+### 🔍 Tela de Detalhes de Pedidos
+<img width="1826" height="888" alt="Captura de tela 2026-03-10 194926" src="https://github.com/user-attachments/assets/635385ec-fcdf-4996-92ab-eea1f7042fae" />
+
+---
+
+
 
 ## 🏗️ Estrutura e Camadas
 
