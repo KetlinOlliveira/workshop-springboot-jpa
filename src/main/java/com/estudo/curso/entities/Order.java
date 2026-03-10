@@ -18,6 +18,8 @@ import java.util.Set;
  *
  * @author ketli
  */
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity//indica que a classe é uma entidade do JPA
 @Table(name = "tb_order")//indica o nome da tabela no banco de dados
 public class Order implements Serializable {
@@ -37,7 +39,7 @@ public class Order implements Serializable {
     @JoinColumn(name = "client_id")//chave estrangeira para o cliente
     private User client;
 
-    @OneToMany(mappedBy = "id.order")
+    @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL)//mapeamento para a classe OrderItem, onde o id é composto por order e product
     private Set<OrderItem> items = new HashSet<>();
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
@@ -71,14 +73,18 @@ public class Order implements Serializable {
     }
 
     public OrderStatus getOrderStatus() {
-        return OrderStatus.valueOf(orderStatus);
+    if (orderStatus == null) return OrderStatus.WAITING_PAYMENT;
+    
+    // Se orderStatus for do tipo Integer no banco:
+    return OrderStatus.valueOf(orderStatus); 
+}
 
+public void setOrderStatus(OrderStatus orderStatus) {
+    if (orderStatus != null) {
+        // Se o seu campo for Integer, salve o código:
+        this.orderStatus = orderStatus.getCode();
     }
-    public void setOrderStatus(OrderStatus orderStatus) {
-        if(orderStatus != null) {
-            this.orderStatus = orderStatus.getCode();
-        }
-    }
+}
     public User getClient() {
         return client;
     }

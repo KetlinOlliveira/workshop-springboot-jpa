@@ -15,6 +15,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import com.estudo.curso.entities.Order;
+import com.estudo.curso.entities.OrderItem;
+
 import java.util.Optional;
 
 /**
@@ -36,6 +38,11 @@ public class OrderService {
     }
 
     public Order insert(Order obj){
+    // Para cada item que veio do Frontend
+    for (OrderItem x : obj.getItems()) {
+        //diz ao item que ele pertence a este Pedido 'obj'
+        x.setOrder(obj); 
+    }
         return orderRepository.save(obj);
     }
 
@@ -60,7 +67,9 @@ public class OrderService {
     }
 
      private void updateData(Order entity, Order obj) {
-        entity.setClient(obj.getClient());
+       if (obj.getOrderStatus() != null) {
+        entity.setOrderStatus(obj.getOrderStatus());
+    }
     }
 
 }

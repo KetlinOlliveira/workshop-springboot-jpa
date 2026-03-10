@@ -67,7 +67,6 @@
             <section id="tabela-container" class="card table-card">
                 <div class="card-header">
                     <h3>Registros Salvos</h3>
-                    <span class="view-more">Ver detalhes</span>
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -81,7 +80,18 @@
         </div> 
     </main>
 </div>
-    <script src="script.js"></script>
-    
+   
+    <div class="modal" id="modalDetalhes" style="display: none;">
+        <div class="modal-content card">
+            <div class="card-header">
+                <h3>Detalhes do Pedido #<span id="detalhe-id"></span></h3>
+                <button onclick="fecharModal()" class="btn-close" id="btnFecharModal">&times;</button>
+            </div>
+            <div id="conteudo-modal">
+                <!-- O conteúdo do modal será preenchido dinamicamente pelo JavaScript -->   
+            </div>
+        </div>
+    </div>
+     <script src="script.js"></script>
 </body>
 </html>

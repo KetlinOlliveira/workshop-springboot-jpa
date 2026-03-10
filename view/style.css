@@ -306,6 +306,56 @@ tr:hover{
   background: #fca5a5;
 }
 
+/*modal*/
+.modal {
 
+    display: none; /* Escondido por padrão */
+    position: fixed; /* Fixa em relação à tela, não ao conteúdo */
+    z-index: 9999; /* Valor alto para ficar na frente de tudo */
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 500px;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    position: relative; /* Para o botão de fechar se posicionar dentro dela */
+    animation: fadeIn 0.3s ease-out; /* Animação suave ao abrir */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #8C5A3C;
+
+}
+
+.item-detalhe {
+
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
 
 
