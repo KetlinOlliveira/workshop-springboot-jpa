@@ -3,9 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>DashBoard Web Service</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="sidebar">
+        <h2> Web Service</h2>
+        <nav>
+            <button onclick="mostrarSecao('usuarios')">Usuários</button>
+            <button onclick="mostrarSecao('pedidos')">Pedidos</button>
+            <button onclick="mostrarSecao('produtos')">Produtos</button>
+        </nav>
+    </div>
+
+    <main class="content">
+        <header>
+            <h1 id="titulo-secao">Dashboard de Gestão</h1>
+        </header>
+
+        <section id="tabela-container">
+            <table id="tabela-dados">
+                <thead>
+                    <tr id="cabecalho-tabela">
+
+                    </tr>
+                </thead>
+            </table>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
     
 </body>
 </html>
