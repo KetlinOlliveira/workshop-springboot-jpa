@@ -95,39 +95,47 @@ function mostrarSecao(tipo) {
             let opcoesUsuarios = users.map(u => `<option value="${u.id}">${u.name}</option>`).join('');
             let opcoesProdutos = products.map(p => `<option value="${p.id}">📦 ${p.name} - R$ ${p.price}</option>`).join('');
 
-            inputs.innerHTML = `
-                <!-- LINHA 1: Cliente e Status -->
-                <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label style="font-size: 13px; color: var(--text-muted);">Cliente:</label>
-                    <select name="clientId" required style="padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; outline: none;">
-                        <option value="">-- Escolha --</option>
-                        ${opcoesUsuarios}
-                    </select>
-                </div>
+            window.opcoesProdutosGlobais = products.map(p => `<option value="${p.id}">📦 ${p.name} - R$ ${p.price}</option>`).join('');
 
-                <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label style="font-size: 13px; color: var(--text-muted);">Status:</label>
-                    <select id="novo-status" class="grid-inputs">
-                        <option value="1">Aguardando Pagamento</option>
-                        <option value="2">Pago</option>
-                        <option value="3">Enviado</option>
-                        <option value="4">Entregue</option>
-                         <option value="5">Cancelado</option>
-                    </select>
-                </div>
+        inputs.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+                <label style="font-size: 13px; color: var(--text-muted);">Cliente:</label>
+                <select name="clientId" required class="grid-inputs">
+                    <option value="">-- Escolha --</option>
+                    ${users.map(u => `<option value="${u.id}">${u.name}</option>`).join('')}
+                </select>
+            </div>
 
-                <!-- LINHA 2: Produto e Quantidade -->
-                <div style="grid-column: 1 / -1; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-color);">
-                    <h4 style="font-size: 14px; margin-bottom: 10px;">Adicionar Item</h4>
-                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px;">
-                        <select name="productId" required style="padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; outline: none;">
-                            <option value="">-- Produto --</option>
-                            ${opcoesProdutos}
-                        </select>
-                        <input type="number" name="quantity" min="1" value="1" placeholder="Qtd" required style="padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; outline: none;">
-                    </div>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+                <label style="font-size: 13px; color: var(--text-muted);">Status:</label>
+                <select name="orderStatus" id="novo-status" class="grid-inputs">
+                    <option value="1">Aguardando Pagamento</option>
+                    <option value="2">Pago</option>
+                    <option value="3">Enviado</option>
+                    <option value="4">Entregue</option>
+                    <option value="5">Cancelado</option>
+                </select>
+            </div>
+
+            <!-- CONTAINER DE ITENS -->
+            <div id="container-itens" style="grid-column: 1 / -1; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-color);">
+                <h4 style="font-size: 14px; margin-bottom: 10px;">Itens do Pedido</h4>
+                
+                <!-- Linha Inicial (TEMPLATE) -->
+                <div class="item-linha" style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 15px; margin-bottom: 10px;">
+                    <select name="productId" required class="grid-inputs select-produto">
+                        <option value="">-- Produto --</option>
+                        ${window.opcoesProdutosGlobais}
+                    </select>
+                    <input type="number" name="quantity" min="1" value="1" class="grid-inputs input-quantidade" required>
+                    <button type="button" onclick="this.parentElement.remove()" style="background:none; border:none; color:red; cursor:pointer; font-weight:bold;">X</button>
                 </div>
-            `;
+            </div>
+
+            <button type="button" onclick="adicionarLinhaItem()" style="grid-column: 1 / -1; padding: 8px; background: #eee; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">
+                + Adicionar outro produto
+            </button>
+`;
         }).catch(error => {
             inputs.innerHTML = `<p style="color: red; grid-column: 1/-1;">Erro ao carregar dados. Verifique se a API está rodando.</p>`;
         });
@@ -162,70 +170,60 @@ async function excluirItem(endpoint, id) {
 document.getElementById('meuForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Captura o elemento do título com segurança
     const elementoTitulo = document.getElementById('titulo-secao');
-    
-    // Verifica se o elemento existe, se não existir, interrompe para não dar erro
-    if (!elementoTitulo) {
-        console.error("Erro: Elemento 'titulo-secao' não encontrado no HTML.");
-        return;
-    }
+    if (!elementoTitulo) return;
 
-    // Pega o texto, transforma em string e coloca em minúsculo
     const tituloTexto = elementoTitulo.innerText.toLowerCase();
     let endpoint = "";
     
-    // Define o endpoint baseado no texto do título
-    if (tituloTexto.includes("usuarios")) {
-        endpoint = "users";
-    } else if (tituloTexto.includes("produtos")) {
-        endpoint = "products";
-    } else if (tituloTexto.includes("categorias")) {
-        endpoint = "categories";
-    } else if (tituloTexto.includes("pedidos")) {
-        endpoint = "orders";
-    }
+    if (tituloTexto.includes("usuarios")) endpoint = "users";
+    else if (tituloTexto.includes("produtos")) endpoint = "products";
+    else if (tituloTexto.includes("categorias")) endpoint = "categories";
+    else if (tituloTexto.includes("pedidos")) endpoint = "orders";
 
     const formData = new FormData(e.target);
     let objetoDados = Object.fromEntries(formData.entries());
 
     if (endpoint === "orders") {
-
-        const productSelect = document.querySelector('select[name="productId"]');
-        // Pega os valores dos selects
+        // 1. Captura os dados básicos do pedido
         const clientId = parseInt(formData.get('clientId'));
-        const productId = parseInt(formData.get('productId'));
-        const quantity = parseInt(formData.get('quantity'));
         const statusDigitado = parseInt(formData.get('orderStatus'));
-
-        const textoOption = productSelect.options[productSelect.selectedIndex].text;
-        const precoReal = parseFloat(textoOption.split('R$ ')[1]) || 0;
-
         const dataAtual = new Date().toISOString().split('.')[0] + "Z";
 
-        // Remonta o objeto no padrão que o Spring Boot espera, incluindo a data atual no formato ISO
+        // 2. Captura TODOS os itens das linhas dinâmicas
+        const linhasItens = document.querySelectorAll('.item-linha');
+        const items = [];
+
+        linhasItens.forEach(linha => {
+            const selectProd = linha.querySelector('.select-produto');
+            const inputQtd = linha.querySelector('.input-quantidade');
+
+            if (selectProd.value) {
+                // Pegar o preço que está no texto da option: "📦 Nome - R$ 100.00"
+                const textoOption = selectProd.options[selectProd.selectedIndex].text;
+                const precoReal = parseFloat(textoOption.split('R$ ')[1]) || 0;
+
+                items.push({
+                    product: { id: parseInt(selectProd.value) },
+                    price: precoReal,
+                    quantity: parseInt(inputQtd.value)
+                });
+            }
+        });
+
+        // 3. Monta o objeto final para o Spring Boot
         objetoDados = {
             moment: dataAtual,
             orderStatus: statusDigitado, 
-            client: { 
-                id: clientId 
-            },
-            items: [
-                {
-                    product: { id: productId },
-                    price: precoReal,// O preço será calculado no backend com base no produto
-                    quantity: quantity
-                }
-            ]
+            client: { id: clientId },
+            items: items // Agora enviamos a lista completa
         };
+
     } else if (endpoint === "products") {
-        // Garante que o preço vá como número decimal e não string
         objetoDados.price = parseFloat(objetoDados.price);
     }
 
-    // Log para verificar o que está sendo enviado
-    console.log("Enviando para:", `${URL_BASE}/${endpoint}`);
-    console.log("Dados:", JSON.stringify(objetoDados));
+    console.log("Enviando JSON:", JSON.stringify(objetoDados));
 
     try {
         const response = await fetch(`${URL_BASE}/${endpoint}`, {
@@ -238,7 +236,9 @@ document.getElementById('meuForm').addEventListener('submit', async (e) => {
             alert("Salvo com sucesso!");
             location.reload(); 
         } else {
-            alert("Erro ao salvar no Banco de Dados. Verifique se os campos estão corretos.");
+            const erroDetallhado = await response.json().catch(() => ({}));
+            console.error("Erro do servidor:", erroDetallhado);
+            alert("Erro ao salvar. Verifique o console para detalhes.");
         }
     } catch (error) {
         alert("Erro de conexão com o servidor Java.");
@@ -339,4 +339,22 @@ async function atualizarStatus(id) {
     } catch (error) {
         console.error("Erro na requisição:", error);
     }
+}
+
+function adicionarLinhaItem() {
+    const container = document.getElementById('container-itens');
+    const novaLinha = document.createElement('div');
+    novaLinha.className = 'item-linha';
+    novaLinha.style = "display: grid; grid-template-columns: 2fr 1fr auto; gap: 15px; margin-bottom: 10px;";
+    
+    novaLinha.innerHTML = `
+        <select name="productId" required class="grid-inputs select-produto">
+            <option value="">-- Produto --</option>
+            ${window.opcoesProdutosGlobais}
+        </select>
+        <input type="number" name="quantity" min="1" value="1" class="grid-inputs input-quantidade" required>
+        <button type="button" onclick="this.parentElement.remove()" style="background:none; border:none; color:red; cursor:pointer; font-weight:bold;">X</button>
+    `;
+    
+    container.appendChild(novaLinha);
 }
