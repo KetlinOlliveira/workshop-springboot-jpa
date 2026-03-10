@@ -15,6 +15,7 @@ import java.net.URI;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.estudo.curso.entities.Order;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  *
  * @author ketli
  */
+@CrossOrigin("*")
 @RestController//indica que essa classe é um recurso REST
 @RequestMapping(value = "/orders")//mapeia as requisições para /orders
 public class OrderResource {
