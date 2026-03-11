@@ -144,7 +144,6 @@ function mostrarSecao(tipo) {
     }
 }
 
-// Chame a função uma vez ao carregar a página para não começar vazia
 mostrarSecao('usuarios');
 
 async function excluirItem(endpoint, id) {
@@ -185,12 +184,12 @@ document.getElementById('meuForm').addEventListener('submit', async (e) => {
     let objetoDados = Object.fromEntries(formData.entries());
 
     if (endpoint === "orders") {
-        // 1. Captura os dados básicos do pedido
+        //Captura os dados básicos do pedido
         const clientId = parseInt(formData.get('clientId'));
         const statusDigitado = parseInt(formData.get('orderStatus'));
         const dataAtual = new Date().toISOString().split('.')[0] + "Z";
 
-        // 2. Captura TODOS os itens das linhas dinâmicas
+        // Captura TODOS os itens das linhas dinâmicas
         const linhasItens = document.querySelectorAll('.item-linha');
         const items = [];
 
@@ -211,12 +210,12 @@ document.getElementById('meuForm').addEventListener('submit', async (e) => {
             }
         });
 
-        // 3. Monta o objeto final para o Spring Boot
+        // Monta o objeto final para o Spring Boot
         objetoDados = {
             moment: dataAtual,
             orderStatus: statusDigitado, 
             client: { id: clientId },
-            items: items // Agora enviamos a lista completa
+            items: items 
         };
 
     } else if (endpoint === "products") {
@@ -309,7 +308,7 @@ window.onclick = function(event) {
 }
 
 async function atualizarStatus(id) {
-    // Buscamos o ID específico do modal
+    // Busca o ID específico do modal
     const selectModal = document.getElementById('status-modal');
     
     if (!selectModal) {
