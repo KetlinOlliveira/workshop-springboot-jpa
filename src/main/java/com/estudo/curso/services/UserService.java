@@ -10,6 +10,9 @@ import com.estudo.curso.services.exceptions.DataBaseException;
 import com.estudo.curso.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.estudo.curso.dto.UserDTO;
+import com.estudo.curso.dto.UserInsertDTO;
 import com.estudo.curso.entities.User;
 import java.util.Optional;
 
@@ -26,17 +29,22 @@ public class UserService {
     @Autowired//injeção de dependência do UserRepository
     private UserRepository userRepository;
     
-    public List<User> findAll(){
-        return userRepository.findAll();
-    }//método para buscar todos os usuários
-
-    public User findById(Long id ){//método para buscar um usuário por id
-        Optional<User> obj = userRepository.findById(id);//método para buscar um usuário por id
-        return obj.orElseThrow(() -> new ResourceNotFoundException(id)); //retorna o usuário encontrado
+    public List<UserDTO> findAll(){
+        return userRepository.findAll()
+        .stream().
+        map(UserDTO::new)
+        .toList();
     }
 
-    public User insert(User obj){
-        return userRepository.save(obj);
+    public UserDTO findById(Long id ){//método para buscar um usuário por id
+       User obj = userRepository.findById(id)
+       .orElseThrow(() -> new ResourceNotFoundException(id));
+       return new UserDTO(obj);
+    }
+    public UserDTO insert(UserInsertDTO obj){
+        User entity = new User(null, obj.name(), obj.email(), obj.telefone(), obj.password());
+        entity = userRepository.save(entity);
+        return new UserDTO(userRepository.save(entity));
     }
 
     public void delete(Long id){
@@ -49,16 +57,17 @@ public class UserService {
         }
     }
 
-    public User update(Long id, User obj){
-        try {
-            User entity = userRepository.getReferenceById(id);
-
-            updateData(entity, obj);
-            return userRepository.save(entity);
-        }catch(EntityNotFoundException e){
-            throw new  ResourceNotFoundException(id);
-        }
+ public UserDTO update(Long id, UserInsertDTO dto) {
+    try {
+        User entity = userRepository.getReferenceById(id);
+        entity.setName(dto.name());
+        entity.setEmail(dto.email());
+        entity.setTelefone(dto.telefone());
+        return new UserDTO(userRepository.save(entity));
+    } catch (EntityNotFoundException e) {
+        throw new ResourceNotFoundException(id);
     }
+}
 
     private void updateData(User entity, User obj) {
         entity.setName(obj.getName());

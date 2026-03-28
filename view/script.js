@@ -255,14 +255,13 @@ async function verDetalhes(id) {
         // Calculando total e listando itens
         let itensHtml = pedido.items.map(item => `
             <div class="item-detalhe">
-                <span>${item.product.name} (x${item.quantity})</span>
+                <span>${item.productName} (x${item.quantity})</span>
                 <strong>R$ ${item.price.toFixed(2)}</strong>
             </div>
         `).join('');
         conteudo.innerHTML = `
             <div style="margin-bottom: 20px;">
-                <p><strong>Cliente:</strong> ${pedido.client.name}</p>
-                <p><strong>Email:</strong> ${pedido.client.email}</p>
+                <p><strong>Cliente:</strong> ${pedido.clientName}</p>
                 <p><strong>Data:</strong> ${new Date(pedido.moment).toLocaleString()}</p>
             </div>
             
@@ -276,11 +275,11 @@ async function verDetalhes(id) {
             <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
             <label>Alterar Status:</label>
             <select id="status-modal" class="grid-inputs" style="margin-top: 5px;">
-                <option value="1" ${pedido.orderStatus === 'WAITING_PAYMENT' ? 'selected' : ''}>Aguardando Pagamento</option>
-                <option value="2" ${pedido.orderStatus === 'PAID' ? 'selected' : ''}>Pago</option>
-                <option value="3" ${pedido.orderStatus === 'SHIPPED' ? 'selected' : ''}>Enviado</option>
-                <option value="4" ${pedido.orderStatus === 'DELIVERED' ? 'selected' : ''}>Entregue</option>
-                <option value="5" ${pedido.orderStatus === 'CANCELED' ? 'selected' : ''}>Cancelado</option>
+                <option value="WAITING_PAYMENT" ${pedido.orderStatus === 'WAITING_PAYMENT' ? 'selected' : ''}>Aguardando Pagamento</option>
+                <option value="PAID" ${pedido.orderStatus === 'PAID' ? 'selected' : ''}>Pago</option>
+                <option value="SHIPPED" ${pedido.orderStatus === 'SHIPPED' ? 'selected' : ''}>Enviado</option>
+                <option value="DELIVERED" ${pedido.orderStatus === 'DELIVERED' ? 'selected' : ''}>Entregue</option>
+                <option value="CANCELED" ${pedido.orderStatus === 'CANCELED' ? 'selected' : ''}>Cancelado</option>
             </select>
             
             <button onclick="atualizarStatus(${pedido.id})" class="btn-primary" style="width: 100%; margin-top: 15px;">Atualizar Pedido</button>
@@ -288,6 +287,7 @@ async function verDetalhes(id) {
 
         document.getElementById('modalDetalhes').style.display = 'flex';
     } catch (error) {
+        console.error('Erro:', error);
         alert("Erro ao carregar detalhes do pedido.");
     }
 }
@@ -317,8 +317,11 @@ async function atualizarStatus(id) {
     }
 
     const dados = {
-        orderStatus: parseInt(selectModal.value)
+        orderStatus: selectModal.value
     };
+
+    console.log("Enviando dados:", dados);
+    console.log("URL:", `${URL_BASE}/orders/${id}`);
 
     try {
         const response = await fetch(`${URL_BASE}/orders/${id}`, {
@@ -327,16 +330,21 @@ async function atualizarStatus(id) {
             body: JSON.stringify(dados)
         });
 
+        console.log("Status da resposta:", response.status);
+        const responseText = await response.text();
+        console.log("Resposta da API:", responseText);
+
         if (response.ok) {
             alert("Status atualizado com sucesso!");
             fecharModal();
             // Atualiza a tabela de pedidos sem recarregar a página inteira
             mostrarSecao('pedidos');
         } else {
-            alert("Erro ao atualizar no Java. Verifique se o ID existe no banco.");
+            alert(`Erro ao atualizar (${response.status}): ${responseText}`);
         }
     } catch (error) {
         console.error("Erro na requisição:", error);
+        alert("Erro na requisição: " + error.message);
     }
 }
 

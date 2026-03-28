@@ -1,8 +1,9 @@
 package com.estudo.curso.resources;
 
-
-import com.estudo.curso.entities.Product;
+import com.estudo.curso.dto.ProductDTO;
+import com.estudo.curso.dto.ProductRequestDTO;
 import com.estudo.curso.services.ProductService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,39 +20,45 @@ public class ProductResource {
     @Autowired
     private ProductService productService;
 
+    // ── GET /products ─────────────────────────────────────────────────────────
     @GetMapping
-    public ResponseEntity<List<Product>> findAll(){
-        List<Product> list = productService.findAll();
+    public ResponseEntity<List<ProductDTO>> findAll() {
+        List<ProductDTO> list = productService.findAll();
         return ResponseEntity.ok().body(list);
     }
 
+    // ── GET /products/{id} ────────────────────────────────────────────────────
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Product> findById(@PathVariable Long id){
-        Product prod = productService.findById(id);
-        return ResponseEntity.ok().body(prod);
+    public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
+        ProductDTO dto = productService.findById(id);
+        return ResponseEntity.ok().body(dto);
     }
 
+    // ── POST /products ────────────────────────────────────────────────────────
+    // Recebe ProductRequestDTO — nunca a entidade JPA
     @PostMapping
-    public ResponseEntity<Product> save(@RequestBody Product obj){
-        obj = productService.insert(obj);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
-        return ResponseEntity.created(uri).body(obj);
-
+    public ResponseEntity<ProductDTO> save(@RequestBody ProductRequestDTO dto) {
+        ProductDTO result = productService.insert(dto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                      .path("/{id}")
+                      .buildAndExpand(result.getId())
+                      .toUri();
+        return ResponseEntity.created(uri).body(result);
     }
+
+    // ── DELETE /products/{id} ─────────────────────────────────────────────────
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
         return ResponseEntity.noContent().build();
-
     }
 
+    // ── PUT /products/{id} ────────────────────────────────────────────────────
+    // Recebe ProductRequestDTO para atualizar
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product obj){
-        obj = productService.update(id, obj);
-        return ResponseEntity.ok().body(obj);
-
+    public ResponseEntity<ProductDTO> update(@PathVariable Long id,
+                                             @RequestBody ProductRequestDTO dto) {
+        ProductDTO result = productService.update(id, dto);
+        return ResponseEntity.ok().body(result);
     }
-   
-
-
 }
