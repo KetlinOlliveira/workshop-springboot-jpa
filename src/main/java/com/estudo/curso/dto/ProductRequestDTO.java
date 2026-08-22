@@ -1,9 +1,16 @@
 package com.estudo.curso.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class ProductRequestDTO {
 
+    @NotBlank(message = "Nome é obrigatório")
     private String name;
     private String description;
+    @NotNull(message = "Preço é obrigatório")
+    @Positive(message = "Preço deve ser maior que zero")
     private Double price;
     private String imgUrl;
 

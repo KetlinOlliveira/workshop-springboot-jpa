@@ -1,10 +1,11 @@
 package com.estudo.curso.resources;
 
 import com.estudo.curso.dto.OrderDTO;
+import com.estudo.curso.dto.OrderInsertDTO;
 import com.estudo.curso.dto.OrderRequestDTO;
-import com.estudo.curso.entities.Order;
 import com.estudo.curso.services.OrderService;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,11 +37,9 @@ public class OrderResource {
     }
 
     // ── POST /orders ──────────────────────────────────────────────────────────
-    // Insert ainda recebe Order diretamente para manter compatibilidade
-    // com o frontend atual (pode ser migrado para RequestDTO futuramente)
     @PostMapping
-    public ResponseEntity<OrderDTO> save(@RequestBody Order obj) {
-        OrderDTO result = orderService.insert(obj);
+    public ResponseEntity<OrderDTO> save(@Valid @RequestBody OrderInsertDTO dto) {
+        OrderDTO result = orderService.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                       .path("/{id}")
                       .buildAndExpand(result.getId())
@@ -59,7 +58,7 @@ public class OrderResource {
     // Atualiza status via DTO de entrada (só orderStatus é editável)
     @PutMapping(value = "/{id}")
     public ResponseEntity<OrderDTO> update(@PathVariable Long id,
-                                           @RequestBody OrderRequestDTO dto) {
+                                           @Valid @RequestBody OrderRequestDTO dto) {
         OrderDTO result = orderService.update(id, dto);
         return ResponseEntity.ok().body(result);
     }

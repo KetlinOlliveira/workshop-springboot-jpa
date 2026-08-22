@@ -1,10 +1,16 @@
 package com.estudo.curso.services;
 
 import com.estudo.curso.dto.OrderDTO;
+import com.estudo.curso.dto.OrderInsertDTO;
 import com.estudo.curso.dto.OrderRequestDTO;
 import com.estudo.curso.entities.Order;
 import com.estudo.curso.entities.OrderItem;
+import com.estudo.curso.entities.OrderStatus;
+import com.estudo.curso.entities.Product;
+import com.estudo.curso.entities.User;
 import com.estudo.curso.repositories.OrderRepository;
+import com.estudo.curso.repositories.ProductRepository;
+import com.estudo.curso.repositories.UserRepository;
 import com.estudo.curso.services.exceptions.DataBaseException;
 import com.estudo.curso.services.exceptions.ResourceNotFoundException;
 
@@ -15,6 +21,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,6 +31,12 @@ public class OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     // ── Retorna lista de DTO ──────────────────────────────────────────────────
     public List<OrderDTO> findAll() {
@@ -40,14 +53,22 @@ public class OrderService {
         return new OrderDTO(entity);
     }
 
-    // ── Insert: ainda recebe a entidade Order do frontend ─────────────────────
-    // (mantido igual ao original para não quebrar o frontend existente)
-    public OrderDTO insert(Order obj) {
-        for (OrderItem x : obj.getItems()) {
-            x.setOrder(obj);
+    // ── Insert: recebe apenas cliente + itens (produto/quantidade). O preço de
+    // cada item é sempre lido do Product cadastrado, nunca do request. ────────
+    public OrderDTO insert(OrderInsertDTO dto) {
+        User client = userRepository.findById(dto.clientId())
+                                     .orElseThrow(() -> new ResourceNotFoundException(dto.clientId()));
+
+        Order order = new Order(null, Instant.now(), OrderStatus.WAITING_PAYMENT, client);
+
+        for (OrderInsertDTO.OrderItemInsertDTO itemDto : dto.items()) {
+            Product product = productRepository.findById(itemDto.productId())
+                                                .orElseThrow(() -> new ResourceNotFoundException(itemDto.productId()));
+            order.getItems().add(new OrderItem(order, product, product.getPrice(), itemDto.quantity()));
         }
-        obj = orderRepository.save(obj);
-        return new OrderDTO(obj);
+
+        order = orderRepository.save(order);
+        return new OrderDTO(order);
     }
 
     // ── Deleta pedido ─────────────────────────────────────────────────────────

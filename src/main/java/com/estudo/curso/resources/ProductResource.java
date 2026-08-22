@@ -4,6 +4,7 @@ import com.estudo.curso.dto.ProductDTO;
 import com.estudo.curso.dto.ProductRequestDTO;
 import com.estudo.curso.services.ProductService;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class ProductResource {
     // ── POST /products ────────────────────────────────────────────────────────
     // Recebe ProductRequestDTO — nunca a entidade JPA
     @PostMapping
-    public ResponseEntity<ProductDTO> save(@RequestBody ProductRequestDTO dto) {
+    public ResponseEntity<ProductDTO> save(@Valid @RequestBody ProductRequestDTO dto) {
         ProductDTO result = productService.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                       .path("/{id}")
@@ -57,7 +58,7 @@ public class ProductResource {
     // Recebe ProductRequestDTO para atualizar
     @PutMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long id,
-                                             @RequestBody ProductRequestDTO dto) {
+                                             @Valid @RequestBody ProductRequestDTO dto) {
         ProductDTO result = productService.update(id, dto);
         return ResponseEntity.ok().body(result);
     }

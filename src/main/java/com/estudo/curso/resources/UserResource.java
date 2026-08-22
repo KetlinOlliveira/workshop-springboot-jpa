@@ -1,10 +1,12 @@
 package com.estudo.curso.resources;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.estudo.curso.dto.UserDTO;
 import com.estudo.curso.dto.UserInsertDTO;
+import com.estudo.curso.dto.UserUpdateDTO;
 import com.estudo.curso.services.UserService;
 
 import java.net.URI;
@@ -30,7 +32,7 @@ public class UserResource {
     }
     
     @PostMapping
-    public ResponseEntity<UserDTO> save(@RequestBody UserInsertDTO dto) {
+    public ResponseEntity<UserDTO> save(@Valid @RequestBody UserInsertDTO dto) {
         UserDTO obj = userService.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -46,7 +48,7 @@ public class UserResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserInsertDTO dto) {
+    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
         return ResponseEntity.ok(userService.update(id, dto));
     }
 }
