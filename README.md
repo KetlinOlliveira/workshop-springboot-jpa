@@ -127,6 +127,39 @@ $ export $(cat .env | xargs) && ./mvnw spring-boot:run
 
 O Postgres do Docker fica isolado do resto da máquina (porta `5435` por padrão, volume próprio `moresale-db-data`) — não precisa ter Postgres instalado localmente nem se preocupar em conflitar com outro banco que já esteja rodando.
 
+## 🔐 Autenticação
+
+A API usa **JWT**: cadastro público, login e depois token no header `Authorization` para tudo que exige conta.
+
+```bash
+# 1. Cadastro (público) — todo novo usuário nasce com ROLE_CLIENT
+POST /users
+{ "name": "...", "email": "...", "telefone": "...", "password": "..." }
+
+# 2. Login — devolve o token e o tempo de expiração (ms)
+POST /auth/login
+{ "email": "...", "password": "..." }
+# → { "token": "...", "expiresIn": 3600000 }
+
+# 3. Rotas protegidas — envie o token recebido
+Authorization: Bearer <token>
+```
+
+**Regras de acesso:**
+- Público: cadastro (`POST /users`), login, e leitura do catálogo (`GET /categories`, `GET /products`).
+- Autenticado (qualquer papel): criar/consultar pedido, consultar e editar o próprio usuário (`GET`/`PUT /users/{id}` — dono ou admin).
+- `ROLE_ADMIN`: gestão de categorias e produtos, exclusão/listagem de usuários, mudança de status de pedido.
+
+Não existe endpoint público para virar admin (por design). Pra promover um usuário já cadastrado, insira o papel direto no banco:
+
+```sql
+INSERT INTO tb_user_role (user_id, role_id)
+SELECT u.id, r.id FROM tb_user u, tb_role r
+WHERE u.email = 'seu-email@example.com' AND r.authority = 'ROLE_ADMIN';
+```
+
+> Limitação conhecida: `GET /orders` ainda não filtra por dono — qualquer usuário autenticado vê todos os pedidos. Fica para uma passada futura de hardening.
+
 ## 💻 FrontEnd (DashBoard)
 Comunicação entre o navegador e o servidor Java.
 

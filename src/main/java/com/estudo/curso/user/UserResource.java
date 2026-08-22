@@ -2,6 +2,7 @@ package com.estudo.curso.user;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -9,7 +10,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/users")
 public class UserResource {
@@ -21,6 +21,7 @@ public class UserResource {
         return ResponseEntity.ok(userService.findAll());
     }
     
+    @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable Long id){
         return ResponseEntity.ok(userService.findById(id));
@@ -42,6 +43,7 @@ public class UserResource {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
         return ResponseEntity.ok(userService.update(id, dto));
