@@ -1,7 +1,10 @@
 package com.estudo.curso.config;
 
-import com.estudo.curso.entities.*;
-import com.estudo.curso.repositories.*;
+import com.estudo.curso.category.*;
+import com.estudo.curso.order.*;
+import com.estudo.curso.payment.*;
+import com.estudo.curso.product.*;
+import com.estudo.curso.user.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
