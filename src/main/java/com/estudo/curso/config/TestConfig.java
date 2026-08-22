@@ -16,6 +16,7 @@ import java.time.Instant;
 //classe para popular o banco de dados com dados iniciais para teste
 @Configuration//indica que é uma classe de configuração do spring
 @Profile("test")//indica que essa configuração só vai ser ativada quando o perfil de teste estiver ativo
+@org.springframework.core.annotation.Order(2)//roda depois do RoleSeeder (Order 1), que garante ROLE_CLIENT antes dos usuários de teste
 public class TestConfig implements CommandLineRunner {
     @Autowired//faz a injeção de dependencia do spring para o repositorio
     private UserRepository userRepository;//repositorio de usuário
@@ -35,11 +36,19 @@ public class TestConfig implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
 
     @Override
     public void run(String... args) throws Exception {
+         Role clientRole = roleRepository.findByAuthority("ROLE_CLIENT")
+                 .orElseThrow(() -> new IllegalStateException("Role ROLE_CLIENT não encontrada"));
+
          User user1 = new User(null, "Maria", "mari@gmail.com", "279999", passwordEncoder.encode("senhaMaria"));
          User user2 = new User(null, "João ", "joao@gmail.com", "88888", passwordEncoder.encode("senhaJoaõ"));
+         user1.getRoles().add(clientRole);
+         user2.getRoles().add(clientRole);
          Order o1 = new Order(null, Instant.parse("2019-06-20T19:53:07Z"), OrderStatus.WAITING_PAYMENT, user1);
          Order o2 = new Order(null, Instant.parse("2019-07-21T03:42:10Z"),OrderStatus.PAID, user1);
          Order o3 = new Order(null, Instant.parse("2019-07-22T15:21:22Z"),OrderStatus.DELIVERED, user2);

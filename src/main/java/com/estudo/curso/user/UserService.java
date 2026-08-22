@@ -20,6 +20,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     public List<UserDTO> findAll(){
         return userRepository.findAll()
         .stream().
@@ -39,6 +42,9 @@ public class UserService {
         entity.setEmail(obj.email());
         entity.setTelefone(obj.telefone());
         entity.setPassword(passwordEncoder.encode(obj.password()));
+        Role clientRole = roleRepository.findByAuthority("ROLE_CLIENT")
+                .orElseThrow(() -> new IllegalStateException("Role ROLE_CLIENT não encontrada"));
+        entity.getRoles().add(clientRole);
         entity = userRepository.save(entity);
         return new UserDTO(entity);
     }
