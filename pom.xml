@@ -36,6 +36,13 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
+		<!-- Usado só pelo BCryptPasswordEncoder por enquanto. A stack completa de
+		     autenticação (spring-boot-starter-security + JWT) entra na fase 3. -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

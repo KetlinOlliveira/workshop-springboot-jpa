@@ -112,10 +112,15 @@ $ git clone [https://github.com/KetlinOlliveira/workshop-springboot-jpa.git](htt
 # 2. Entre na pasta do projeto
 $ cd workshop-springboot-jpa
 
-# 3. Execute o projeto com o Maven
-$ ./mvnw spring-boot:run
+# 3. Copie o .env.example e ajuste os valores (nenhum segredo fica no código)
+$ cp .env.example .env
+
+# 4. Exporte as variáveis (ou configure-as no run config da sua IDE) e rode
+$ export $(cat .env | xargs) && ./mvnw spring-boot:run
 
 ```
+
+> No PowerShell: `Get-Content .env | ForEach-Object { $n,$v = $_ -split '=',2; Set-Item "env:$n" $v }` antes do `./mvnw spring-boot:run`.
 
 ## 💻 FrontEnd (DashBoard)
 Comunicação entre o navegador e o servidor Java.

@@ -3,7 +3,6 @@ package com.estudo.curso.services;
 
 import com.estudo.curso.entities.Category;
 import com.estudo.curso.repositories.CategoryRepository;
-import com.estudo.curso.repositories.OrderRepository;
 import com.estudo.curso.services.exceptions.DataBaseException;
 import com.estudo.curso.services.exceptions.ResourceNotFoundException;
 
@@ -12,7 +11,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
