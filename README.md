@@ -160,6 +160,25 @@ WHERE u.email = 'seu-email@example.com' AND r.authority = 'ROLE_ADMIN';
 
 > Limitação conhecida: `GET /orders` ainda não filtra por dono — qualquer usuário autenticado vê todos os pedidos. Fica para uma passada futura de hardening.
 
+## 🧪 Testes
+
+Três camadas, cada uma cobrindo o que a anterior não alcança:
+
+- **Unitários** (`*ServiceTests`): regra de negócio isolada com Mockito, sem Spring nem banco.
+- **Controller** (`*ResourceTests`): contrato HTTP com `@WebMvcTest` — status code, JSON, validação — service mockado, segurança desligada de propósito.
+- **Integração** (`ApiIntegrationTests`): sobe o contexto inteiro (Security, JWT real, JPA) contra um Postgres descartável via **Testcontainers**, simulando a jornada completa: cadastro → login → promoção a admin → catálogo → pedido → controle de acesso por dono/papel.
+
+```bash
+# Roda tudo (a integração sobe e derruba o Postgres do Testcontainers sozinha,
+# não usa o container do docker-compose)
+$ ./mvnw test
+
+# Relatório de cobertura (JaCoCo) em target/site/jacoco/index.html
+$ ./mvnw test && start target/site/jacoco/index.html   # (Windows; use "open" no macOS)
+```
+
+Cobertura atual: ~68% de instruções. O objetivo não é perseguir 100%, é ter o número visível e crescendo.
+
 ## 💻 FrontEnd (DashBoard)
 Comunicação entre o navegador e o servidor Java.
 
