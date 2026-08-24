@@ -11,7 +11,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -25,8 +24,8 @@ public class CategoryService {
 
     }
     public Category findById(Long id){
-        Optional<Category> cate = categoryRepository.findById(id);
-        return cate.get();
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public Category insert(Category obj){
